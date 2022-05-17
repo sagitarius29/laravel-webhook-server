@@ -48,6 +48,14 @@ class WebhookCall
         $this->callWebhookJob = app(CallWebhookJob::class);
     }
 
+    public function setClientCertificate($file, $pass)
+    {
+        $this->callWebhookJob->clientCertFile = $file;
+        $this->callWebhookJob->clientCertPass = $pass;
+
+        return $this;
+    }
+
     public function url(string $url): self
     {
         $this->callWebhookJob->webhookUrl = $url;

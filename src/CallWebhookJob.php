@@ -49,6 +49,10 @@ class CallWebhookJob implements ShouldQueue
 
     public string $uuid = '';
 
+    public ?string $clientCertFile = null;
+
+    public string $clientCertPass = '';
+
     private ?Response $response = null;
 
     private ?string $errorType = null;
@@ -69,13 +73,17 @@ class CallWebhookJob implements ShouldQueue
                 ? ['query' => $this->payload]
                 : ['body' => json_encode($this->payload)];
 
+            if (!is_null($this->clientCertFile)) {
+                $body['cert'] = [$this->clientCertFile, $this->clientCertPass];
+            }
+
             $this->response = $client->request($this->httpVerb, $this->webhookUrl, array_merge([
                 'timeout' => $this->requestTimeout,
                 'verify' => $this->verifySsl,
                 'headers' => $this->headers,
                 'on_stats' => function (TransferStats $stats) {
                     $this->transferStats = $stats;
-                },
+                }
             ], $body));
 
             if (! Str::startsWith($this->response->getStatusCode(), 2)) {
