@@ -74,7 +74,7 @@ class CallWebhookJob implements ShouldQueue
                 : ['body' => json_encode($this->payload)];
 
             if (!is_null($this->clientCertFile)) {
-                $body['cert'] = [$this->clientCertFile, $this->clientCertPass];
+                $body['cert'] = $this->addClientCertificate($this->clientCertFile, $this->clientCertPass);
             }
 
             $this->response = $client->request($this->httpVerb, $this->webhookUrl, array_merge([
@@ -122,6 +122,11 @@ class CallWebhookJob implements ShouldQueue
 
             $this->delete();
         }
+    }
+
+    public function addClientCertificate(string $certFile, ?string $certPass): array
+    {
+        return [$certFile, $certPass];
     }
 
     public function tags()

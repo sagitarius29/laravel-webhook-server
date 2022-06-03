@@ -29,8 +29,9 @@ class WebhookCall
     public static function create(): self
     {
         $config = config('webhook-server');
+        $webhookCall = $config['call_webhook_job'] ?? null;
 
-        return (new static())
+        return (new static($webhookCall))
             ->uuid(Str::uuid())
             ->onQueue($config['queue'])
             ->useHttpVerb($config['http_verb'])
@@ -43,9 +44,9 @@ class WebhookCall
             ->verifySsl($config['verify_ssl']);
     }
 
-    public function __construct()
+    public function __construct($callWebhookJob = null)
     {
-        $this->callWebhookJob = app(CallWebhookJob::class);
+        $this->callWebhookJob = $callWebhookJob !== null ? app($callWebhookJob) : app(CallWebhookJob::class);
     }
 
     public function setClientCertificate($file, $pass)

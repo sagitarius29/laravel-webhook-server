@@ -58,4 +58,8 @@ return [
      * underlying job that performs the webhook request.
      */
     'tags' => [],
+
+    'call_webhook_job' => Spatie\WebhookServer\CallWebhookJob::class,
+    
+    
 ];
