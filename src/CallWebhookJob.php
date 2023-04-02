@@ -75,6 +75,7 @@ class CallWebhookJob implements ShouldQueue
 
             if (!is_null($this->clientCertFile)) {
                 $body['cert'] = $this->addClientCertificate($this->clientCertFile, $this->clientCertPass);
+                $body['curl'] = [CURLOPT_SSLCERTTYPE => 'P12'];
             }
 
             $this->response = $client->request($this->httpVerb, $this->webhookUrl, array_merge([
